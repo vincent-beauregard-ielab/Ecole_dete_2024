@@ -1,5 +1,5 @@
 ---
-title: "Accessing Web API Data Using R"
+title: "Accessing GBIF data using RGbif Package"
 output: html_document
 ---
 
@@ -10,7 +10,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Accessing Web API Data Using R
+## Accessing GBIF data using RGbif Package
 
 ### STEP 0 - Load the libraries
 ```{r, message=FALSE, warning=FALSE}

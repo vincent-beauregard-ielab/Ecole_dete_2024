@@ -58,7 +58,7 @@ The `ggplot2` package is a powerful tool for creating visualizations in R. The `
 # Plot the first 10 polygons over the province of Quebec
 # Get the province of Quebec and project the data to the same CRS
 quebec <- ne_states(country = "canada", returnclass = "sf") |>
-  filter(name_en == "Quebec") |>
+  dplyr::filter(name_en == "Quebec") |>
   st_transform(st_crs(shp))
 
 # Plot the data
@@ -71,4 +71,5 @@ ggplot() +
 ```
 
 <!-- To build and knit, use knitr command -->
-<!-- knitr::knit("demo_notebooks/access_static_files.Rmd") -->
+<!-- knitr::knit("demo_notebooks/access_static_files.Rmd")
+rmarkdown::render("demo_notebooks/access_static_files.Rmd") -->
