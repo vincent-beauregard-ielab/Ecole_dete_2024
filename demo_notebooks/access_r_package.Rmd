@@ -1,0 +1,80 @@
+---
+title: "Accessing Web API Data Using R"
+output: html_document
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Accessing Web API Data Using R
+
+### STEP 0 - Load the libraries
+```{r, message=FALSE, warning=FALSE}
+library(rgbif)      # -> for accessing GBIF data
+library(sf)         # -> for spatial data manipulation
+library(dplyr)      # -> for data manipulation
+library(ggplot2)    # -> for plotting
+library(rnaturalearth) # -> for spatial data access
+```
+
+### STEP 1 - Import the data
+```{r, message=FALSE, warning=FALSE}
+# STEP 1 - Make request to the GBIF API using rgbif
+search_params <- list(
+  scientificName = "Bubo scandiacus",
+  country = "CA",
+  stateProvince = "Quebec",
+  year = 2010:2021,
+  limit = 10
+)
+
+# Using rgbif to get occurrences
+occ_data <- occ_search(
+    scientificName = search_params$scientificName,
+    stateProvince = search_params$stateProvince,
+    eventDate = search_params$eventDate,
+    limit = search_params$limit
+)
+
+# Extract data
+data <- occ_data$data
+
+# Print the data
+print(data)
+```
+
+### STEP 2 - Data manipulation and cleaning
+
+The `rgbif` package handles JSON parsing internally, so there's no need for manual parsing. The `occ_search` function retrieves data directly in a list format, which we transform into an `sf` object for spatial operations.
+
+```{r, message=FALSE, warning=FALSE}
+data <- data |>
+  sf::st_as_sf(coords = c("decimalLongitude", "decimalLatitude"), crs = 4326) |>
+  sf::st_transform(32198)
+
+# Data summary
+print(data)
+```
+
+### STEP 3 - Visualize the data
+
+The `ggplot2` package is used to plot spatial data stored in the `sf` object along with base map data for the province of Quebec.
+
+```{r, message=FALSE, warning=FALSE}
+# Get the province of Quebec geometry
+quebec <- ne_states(country = "canada", returnclass = "sf") |>
+  filter(name_en == "Quebec") |>
+  sf::st_transform(32198)
+
+# Plot the data
+ggplot() +
+  geom_sf(data = quebec) +
+  geom_sf(data = data, color = "red", size = 2) +
+  theme_minimal() +
+  labs(title = "Occurrences of Bubo scandiacus in Quebec",
+       x = "Longitude", y = "Latitude")
+```

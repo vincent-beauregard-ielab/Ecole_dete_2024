@@ -1,0 +1,91 @@
+---
+title: "Accessing Web API Data Using R"
+output: html_document
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Accessing Web API Data Using R
+
+### STEP 0 - Load the libraries
+```{r, message=FALSE, warning=FALSE}
+library(httr2)       # -> for HTTP requests
+library(jsonlite)    # -> for handling JSON content
+library(sf)          # -> for spatial data manipulation
+library(dplyr)       # -> for data manipulation
+library(ggplot2)     # -> for plotting
+library(rnaturalearth) # -> for spatial data access
+```
+
+### STEP 1 - Import the data
+```{r, message=FALSE, warning=FALSE}
+# STEP 1 - Make request to the GBIF API
+search_params <- list(
+  scientificName = "Bubo scandiacus",
+  stateProvince = "Quebec",
+  eventDate = "2010-01-01,2021-12-31",
+  limit = 10
+)
+
+url <- "https://api.gbif.org/v1/occurrence/search"
+
+response <- httr2::request(url) |>
+  httr2::req_url_query(!!!search_params) |>
+  httr2::req_perform()
+
+# Print the response content
+print(response)
+```
+
+### STEP 2 - Data manipulation and cleaning
+
+The response from the GBIF API is in JSON format. We can use the `jsonlite` package to parse the JSON content into R objects. The `fromJSON()` function reads the JSON content and returns an R object. The `simplifyDataFrame` parameter is used to convert nested lists to data frames.
+
+It is very common that APIs returns multiple level of nested lists, making the data difficult to work with. This workflow simplifies the data structure by converting nested lists to data frames.
+
+We use the package `sf` to work with spatial data in R and project the coordinates to a coordinate reference system (CRS) that is suitable for plotting over Quebec (e.g., EPSG:32198).
+
+```{r, message=FALSE, warning=FALSE}
+# Parse the response content as an R friendly object
+data <- httr2::resp_body_string(response) |>
+  jsonlite::fromJSON(simplifyDataFrame = TRUE)
+
+data <- data$results |> sf::st_as_sf(
+        coords = c("decimalLongitude", "decimalLatitude"), crs = 4326) |>
+    sf::st_transform(32198)
+
+# Data summary
+print(data)
+```
+
+### STEP 3 - Visualize the data
+
+The `ggplot2` package is a powerful tool for creating visualizations in R. The `geom_sf()` function from the `ggplot2` package can be used to plot spatial data stored in an `sf` object.
+
+The `rnaturalearth` package provides easy access to geometry for cultural and physical features of the world. We can use the `ne_states()` function to get the geometry of the provinces of Canada and plot the occurrence data over the province of Quebec.
+
+```{r, message=FALSE, warning=FALSE}
+# Get the province of Quebec
+quebec <- ne_states(country = "canada", returnclass = "sf") %>%
+  filter(name_en == "Quebec") |>
+    sf::st_transform(32198)
+
+# Plot the data
+ggplot() +
+  geom_sf(data = quebec) +
+  geom_sf(data = data, color = "red", size = 2) +
+  theme_minimal() +
+  labs(title = "Occurrences of Bubo scandiacus in Quebec",
+       x = "Longitude", y = "Latitude")
+```
+
+<!-- To build and knit, use knitr command -->
+<!-- knitr::knit("demo_notebooks/accessing_web_api_data.Rmd") -->
+<!-- rmarkdown::render("accessing_web_api_data.Rmd")
+You can save this content in a file with the `.Rmd` extension (e.g., `accessing_web_api_data.Rmd`). Then, you can knit the document to produce an HTML file:
+This will generate an HTML document with the plots of occurrences of `Bubo scandiacus` in Quebec. -->

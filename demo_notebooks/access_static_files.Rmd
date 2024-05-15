@@ -1,0 +1,74 @@
+---
+title: "Access static files from the web using R"
+output: html_document
+---
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Access static files from the web using R
+
+### STEP 0 - Load the libraries and request parameters
+```{r, message=FALSE, warning=FALSE}
+library(sf) # -> for spatial data handling
+library(rnaturalearth) # -> for spatial data
+library(ggplot2) # -> for plotting
+```
+
+### STEP 1 - Import the data
+```{r, message=FALSE, warning=FALSE}
+# STEP 1 - Download and read the shapefile
+# Download and unzip the file
+shp_url <- "https://www.donneesquebec.ca/recherche/dataset/f0250998-eac1-46a8-8e0c-d7278ae85506/resource/7d1ba01c-d251-460e-972b-7dcde6cf2fe0/download/registre_aires_prot.zip"
+
+download.file(shp_url, "registre_aires_prot.zip")
+unzip("registre_aires_prot.zip", exdir = ".")
+```
+
+### STEP 2 - Data manipulation and cleaning
+
+Since the shapefile is in the ESRI Shapefile format, we can use the `sf` package to read the data into R. The `st_read()` function reads the shapefile and returns an `sf` object.
+
+The `sf` object is a data frame with a special attribute called `geometry`. The `geometry` attribute contains the spatial information of the data, such as points, lines, or polygons. The `sf` package provides functions to manipulate and visualize spatial data in vector format.
+
+```{r, message=FALSE, warning=FALSE}
+# Read the shapefile
+shp <- sf::st_read("registre_aires_prot/AP_REG_S.shp")
+
+# Data summary
+print(shp)
+```
+
+The coordinates geometry of the data is projected in the Quebec Lambert Conformal Conic projection (EPSG: 32198), meaning that the coordinates are in meters in a cartesian system.
+
+Projected coordinates are better suited for spatial analysis and visualization because they preserve the shape of the features. Projecting the data to a specific coordinate reference system (CRS) is essential for spatial analysis and visualization.
+
+### STEP 3 - Visualize the data
+
+The `ggplot2` package is a powerful tool for creating visualizations in R. The `geom_sf()` function from the `ggplot2` package can be used to plot spatial data stored in an `sf` object.
+
+`rnaturalearth` package provides easy access to geometry for cultural and physical features of the world. We can use the `ne_states()` function to get the geometry of the provinces of Canada and plot the protected areas over the province of Quebec.
+
+```{r, message=FALSE, warning=FALSE}
+# Plot the first 10 polygons over the province of Quebec
+# Get the province of Quebec and project the data to the same CRS
+quebec <- ne_states(country = "canada", returnclass = "sf") |>
+  filter(name_en == "Quebec") |>
+  st_transform(st_crs(shp))
+
+# Plot the data
+ggplot() +
+  geom_sf(data = quebec) +
+  geom_sf(data = shp[1:10, ], color = "red", fill = NA, size = 2) +
+  theme_minimal() +
+  labs(title = "Protected Areas in Quebec",
+       x = "Longitude", y = "Latitude")
+```
+
+<!-- To build and knit, use knitr command -->
+<!-- knitr::knit("demo_notebooks/access_static_files.Rmd") -->
