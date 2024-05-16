@@ -69,6 +69,8 @@ class: middle
 
 ### 👨‍🏫 Demo : Accessing Quebec's protected areas data for governmental website
 
+[Demo link](demo_notebooks/access_static_files.html)
+
 ---
 
 ### 📥 R Packages to manipulate static file
@@ -236,6 +238,8 @@ class: middle
 
 ### 👨‍🏫 Demo : Accessing GBIF occurrences through its API
 
+[Demo link](demo_notebooks/access_web_api.html)
+
 ---
 
 class: middle
@@ -243,6 +247,9 @@ class: middle
 ### 📡 Access data through R package
 
 **👨‍🏫 Demo** Querying GBIF data using R package
+
+
+[Demo link](demo_notebooks/access_r_package.html)
 
 ---
 
@@ -320,10 +327,94 @@ For spatial data
 
 ---
 
+class: middle, center
+
+### 🎁 Wrapping up - A few life lessons processing data using code
+
+---
+
+### 🎁 Data processing using code
+
+.middle[
+
+![Westfalia meme](<Images/westfalia meme.jpg>)
+
+]
+
+---
+
 class: middle
 
-#### 📚 R resources for data manipulation and analysis
+### 🎁 A few life lessons processing data using code
 
-* 🧪 [R for Data Science](https://r4ds.hadley.nz/) by Hadley Wickham, Mine Çetinkaya-Rundel, and Garrett Grolemund.
+Data sources APIs change, data schema evolve 🛑
 
-* 🌎 [Spatial Data Science: With Applications in R ](https://r-spatial.org/book/) by Edzer Pebesma and Roger Bivand.
+Cache accessed data in project directory ✅
+
+<br/>
+
+It's SOOOO easy to get burried in data & processing time 🛑
+
+Learn to query data efficiently and subset data directly at sources ✅
+
+When exploring data, always start with a subset of data ✅
+
+---
+
+class: middle
+
+### 🎁 A few life lessons processing data using code
+
+Data sources have citations requirements & usage limitations 🛑
+
+Cite data sources, get comfortable with data licenses ([Creative commons licenses](https://creativecommons.org/share-your-work/cclicenses/)) ✅
+
+<br/>
+
+Collaboration is central to data science 🛑
+
+Use git, commit frequently ✅
+
+Use [clean code principles](https://www.freecodecamp.org/news/clean-coding-for-beginners/), write documentation ✅
+
+---
+
+class: middle
+
+### 📈📉 Toward indicators
+
+**Properties of indicators** What are the spatial, temporal and biodiversity scales of the indicators? Local, regional, national, global? Does it evolve over time or is it static? What biodiversity attributes are you interested in (Species, Ecosystem, Functions, Services, Traits, etc.)?
+
+**Data sources** What data sources are available for your indicators? What are the main characteristics of the data sources? Spatial, temporal, biodiversity variables, data structure, coverages ?
+
+**Data processing** What processing steps are needed to transform the data into indicators? Cleaning ? Joining with other data sources? Aggregating for a specific spatial or temporal or biodiversity scale?
+
+**Data visualization** How can we visualize the relevant data ? What visualization will be relevant for the indicator? Maps, graphs, tables, etc.
+
+.w-60[![Data science workflow](https://r4ds.hadley.nz/diagrams/data-science/whole-game.png)]
+
+---
+
+class: middle, center
+
+## 🛠 List of packages & resources
+
+[Opinionated list](demo_notebooks/ressources_for_biodiversity.html)
+
+---
+
+class: middle, center
+
+## Thank you !
+
+.circle-100[![Alt text](<Images/yankaczynski 66 profile.jpg>)]
+
+**Email** vincent.beauregard@usherbrooke.ca
+
+.footer[
+![Alt text](Images/udes_logo.png)
+
+![Alt text](Images/bq_logo.png)
+
+![Alt text](Images/bios2_logo.png)
+]

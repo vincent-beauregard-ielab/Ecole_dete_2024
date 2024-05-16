@@ -4,7 +4,7 @@ class: center
 
 .middle[
 
-![Westfalia meem](<Images/westfalia meme.jpg>)
+![Westfalia meme](<Images/westfalia meme.jpg>)
 
 ]
 
